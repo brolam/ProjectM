@@ -35,6 +35,13 @@ dependencies {
              Realizar a autenticação do usuário no aplicativo.
              */
     compile "com.google.firebase:firebase-auth:$PLAY_SERVICES_VERSION"
+
+    /*
+               Firebase Realtime Database https://firebase.google.com/docs/database/
+               Armazenar os Notes Vision e blocos de texto.
+                */
+    compile "com.google.firebase:firebase-database:$PLAY_SERVICES_VERSION"
+
     testCompile 'junit:junit:4.12'
     apply plugin: 'com.google.gms.google-services'
 }

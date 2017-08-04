@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -37,10 +38,13 @@ public class SignUpActivityTest implements OnCompleteListener<Void> {
     private static final String TAG = "SignUpActivityTest";
     private static final String USER_NAME = "User";
     private static final String USER_SURNAME = "Test";
-    private static final String USER_EMAIL = "test@brolam.com.br";
-    private static final String USER_PASSWORD = "123.test";
+    public static final String USER_EMAIL = "test@brolam.com.br";
+    private static final String USER_BIRTH_DAY = "23";
+    private static final String USER_BIRTH_MONTH = "2";
+    private static final String USER_BIRTH_YEAR = "1978";
+    public static final String USER_PASSWORD = "123.test";
     private FirebaseAuth firebaseAuth;
-    private boolean isSetupCompleted = false;
+    private boolean isSetupCompleted = true;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -85,16 +89,25 @@ public class SignUpActivityTest implements OnCompleteListener<Void> {
         signUpButton.perform(click());
 
         ViewInteraction inputName = onView(allOf(withId(R.id.name), isDisplayed()));
-        inputName.perform(replaceText(USER_NAME));
+        inputName.perform(replaceText(USER_NAME), closeSoftKeyboard());
 
         ViewInteraction inputSurname = onView(allOf(withId(R.id.surname), isDisplayed()));
-        inputSurname.perform(replaceText(USER_SURNAME));
+        inputSurname.perform(replaceText(USER_SURNAME), closeSoftKeyboard());
 
         ViewInteraction inputEmail = onView(allOf(withId(R.id.email), isDisplayed()));
-        inputEmail.perform(replaceText(USER_EMAIL));
+        inputEmail.perform(replaceText(USER_EMAIL), closeSoftKeyboard());
+
+        ViewInteraction inputBirthDay = onView(allOf(withId(R.id.birthDay), isDisplayed()));
+        inputBirthDay.perform(replaceText(USER_BIRTH_DAY), closeSoftKeyboard());
+
+        ViewInteraction inputBirthMonth = onView(allOf(withId(R.id.birthMonth), isDisplayed()));
+        inputBirthMonth.perform(replaceText(USER_BIRTH_MONTH), closeSoftKeyboard());
+
+        ViewInteraction inputBirthYear = onView(allOf(withId(R.id.birthYear), isDisplayed()));
+        inputBirthYear.perform(replaceText(USER_BIRTH_YEAR), closeSoftKeyboard());
 
         ViewInteraction inputPassword = onView(allOf(withId(R.id.password), isDisplayed()));
-        inputPassword.perform(replaceText(USER_PASSWORD));
+        inputPassword.perform(replaceText(USER_PASSWORD), closeSoftKeyboard());
 
         ViewInteraction registerButton = onView(allOf(withId(R.id.registerButton),isDisplayed()));
         registerButton.perform(click());
