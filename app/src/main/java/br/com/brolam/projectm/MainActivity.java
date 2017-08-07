@@ -16,17 +16,24 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.UserAccount;
+import br.com.brolam.projectm.data.models.UserProperties;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener {
     private static int REQUEST_CODE_PRICING_SELECT = 100;
 
     private FirebaseAuth firebaseAuth;
-    private FirebaseUser firebaseUser;
-    private DataBaseProvider dataBaseProvider;
-    private boolean isNotPriceSelected = true;
+    private DataBaseProvider dataBaseProvider = null;
+    private HashMap<String, Object> userProperties = null;
+    private HashMap<String, Object> userAccount = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,31 +61,38 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        starDataBaseProvider();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        this.firebaseUser = this.firebaseAuth.getCurrentUser();
-        if ( this.firebaseUser  == null){
+        this.starDataBaseProvider();
+        if ( this.dataBaseProvider  == null){
             SignInActivity.doLogin(this);
-        } else if ( isNotPriceSelected()){
-            PricingActivity.select(this, REQUEST_CODE_PRICING_SELECT);
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ( requestCode == REQUEST_CODE_PRICING_SELECT){
-            if ( resultCode == RESULT_OK){
-                this.isNotPriceSelected = false;
-            }
+    protected void onPause() {
+        super.onPause();
+        this.pauseDataBaseProvider();
+    }
+
+    public void starDataBaseProvider() {
+        FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
+        if ( firebaseUser != null) {
+            this.dataBaseProvider = new DataBaseProvider(firebaseUser);
+            this.dataBaseProvider.addUserAccountListener(this);
+            this.dataBaseProvider.addUserPropertiesListener(this);
         }
     }
 
-    public void starDataBaseProvider(FirebaseUser firebaseUser) {
-        this.dataBaseProvider = new DataBaseProvider(firebaseUser);
+    public void pauseDataBaseProvider() {
+        if ( this.dataBaseProvider != null) {
+            this.dataBaseProvider.removeUserAccountListener(this);
+            this.dataBaseProvider.removeUserPropertiesListener(this);
+        }
     }
 
     @Override
@@ -138,7 +152,19 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public boolean isNotPriceSelected() {
-        return this.isNotPriceSelected;
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        if (UserAccount.isReferenceUserAccount(dataSnapshot.getRef())) {
+            this.userAccount = (HashMap<String, Object>) dataSnapshot.getValue();
+            if (UserAccount.isValid(this.userAccount) == false ){
+                PricingActivity.select(this, REQUEST_CODE_PRICING_SELECT);
+            }
+        } else if (UserProperties.isReferenceUserAccount(dataSnapshot.getRef()))
+            this.userProperties = (HashMap<String, Object>) dataSnapshot.getValue();
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
     }
 }

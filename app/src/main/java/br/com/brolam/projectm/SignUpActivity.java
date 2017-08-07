@@ -34,6 +34,7 @@ import br.com.brolam.projectm.data.models.UserProperties;
  * A login screen that offers login via email/password.
  */
 public class SignUpActivity extends AppCompatActivity {
+    private static int REQUEST_CODE_PRICING_SELECT = 100;
     private static String TAG = "SignUpActivity";
     private FirebaseAuth firebaseAuth;
 
@@ -154,7 +155,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 DataBaseProvider dataBaseProvider = new DataBaseProvider(firebaseAuth.getCurrentUser());
                                 dataBaseProvider.setUserProperties(UserProperties.getNewUserProperties(surname));
                                 Log.d(TAG, "createUserWithEmail:success");
-                                SignUpActivity.this.finish();
+                                SignUpActivity.this.setResult(RESULT_OK);
+                                SignUpActivity.this.selectPrice();
                             }
                         } finally {
                             showProgress(false);
@@ -171,6 +173,15 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    private void selectPrice() {
+        PricingActivity.select(this, REQUEST_CODE_PRICING_SELECT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ( requestCode == REQUEST_CODE_PRICING_SELECT) this.finish();
+    }
 
     /**
      * Shows the progress UI and hides the login form.

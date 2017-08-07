@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
 public class DataBaseProviderTest implements ValueEventListener {
     private static String TAG = "DataBaseProviderTest";
     private FirebaseUser firebaseUser;
-    private DataBaseProvider dataBaseProvider;
     private HashMap<String, Object> expectedUserProperties = null;
     private HashMap<String, Object> expectedUserAccount = null;
     private boolean isSetExpectedUserProperties;

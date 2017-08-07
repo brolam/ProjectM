@@ -14,8 +14,8 @@
     <string name="prompt_surname">Surname</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_up">Sign up</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_up">Sign Up</string>
     <string name="action_next">Next</string>
     <string name="action_register">Register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -32,4 +32,6 @@
     <!--Pricing Activity -->
     <string name="pricing_option_free">Free - Up to three applications</string>
     <string name="pricing_option_premium">Premium - unlimited applications</string>
+    <string name="pricing_activity_select_account_type">Please select an account type.</string>
+    <string name="action_reset_password">I forgot my password</string>
 </resources>

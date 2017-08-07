@@ -3,10 +3,12 @@ package br.com.brolam.projectm.data;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
+import br.com.brolam.projectm.MainActivity;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
@@ -24,6 +26,8 @@ public class DataBaseProvider {
         this.firebaseUser = firebaseUser;
         if ( firebaseDatabase == null){
             firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+            firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
         }
         if ( firebaseUser == null )
             throw new RuntimeException("Firebase User is not sign Up!");
@@ -50,5 +54,13 @@ public class DataBaseProvider {
 
     public void addUserAccountListener(ValueEventListener valueEventListener) {
         this.referenceUserAccount.addValueEventListener(valueEventListener);
+    }
+
+    public void removeUserAccountListener(ValueEventListener valueEventListener) {
+        this.referenceUserAccount.removeEventListener(valueEventListener);
+    }
+
+    public void queryUserAccount() {
+        this.referenceUserAccount.orderByKey();
     }
 }

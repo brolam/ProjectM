@@ -2,6 +2,8 @@ package br.com.brolam.projectm.data.models;
 
 import android.text.TextUtils;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.Date;
 import java.util.HashMap;
 
@@ -41,10 +43,13 @@ public class UserProperties {
             return false;
     }
 
-
     public static boolean isPasswordValid(String password) {
         if (TextUtils.isEmpty(password)) return false;
         if (password.length() <= 4 ) return false;
         return true;
+    }
+
+    public static boolean isReferenceUserAccount(DatabaseReference ref) {
+        return ref.getRef().toString().contains(PATH_USER_PROPERTIES);
     }
 }
