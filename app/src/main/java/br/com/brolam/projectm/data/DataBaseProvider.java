@@ -7,6 +7,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
+import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
 /**
@@ -17,6 +18,7 @@ public class DataBaseProvider {
     private FirebaseUser firebaseUser;
     private static FirebaseDatabase firebaseDatabase;
     private DatabaseReference referenceUserProperties;
+    private DatabaseReference referenceUserAccount;
 
     public DataBaseProvider(FirebaseUser firebaseUser) {
         this.firebaseUser = firebaseUser;
@@ -26,10 +28,15 @@ public class DataBaseProvider {
         if ( firebaseUser == null )
             throw new RuntimeException("Firebase User is not sign Up!");
         this.referenceUserProperties = firebaseDatabase.getReference(UserProperties.PATH_USER_PROPERTIES).child(this.firebaseUser.getUid());
+        this.referenceUserAccount = firebaseDatabase.getReference(UserAccount.REFERENCE_NAME).child(this.firebaseUser.getUid());
     }
 
     public void setUserProperties(HashMap<String, Object> userProperties) {
         this.referenceUserProperties.updateChildren(userProperties);
+    }
+
+    public void setUserAccount(HashMap<String, Object> userAccount) {
+        this.referenceUserAccount.updateChildren(userAccount);
     }
 
     public void addUserPropertiesListener(ValueEventListener valueEventListener) {
@@ -41,6 +48,7 @@ public class DataBaseProvider {
     }
 
 
-
-
+    public void addUserAccountListener(ValueEventListener valueEventListener) {
+        this.referenceUserAccount.addValueEventListener(valueEventListener);
+    }
 }

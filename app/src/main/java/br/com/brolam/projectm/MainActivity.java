@@ -1,5 +1,6 @@
 package br.com.brolam.projectm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,11 +17,16 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import br.com.brolam.projectm.data.DataBaseProvider;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static int REQUEST_CODE_PRICING_SELECT = 100;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private DataBaseProvider dataBaseProvider;
+    private boolean isNotPriceSelected = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +62,23 @@ public class MainActivity extends AppCompatActivity
         this.firebaseUser = this.firebaseAuth.getCurrentUser();
         if ( this.firebaseUser  == null){
             SignInActivity.doLogin(this);
+        } else if ( isNotPriceSelected()){
+            PricingActivity.select(this, REQUEST_CODE_PRICING_SELECT);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ( requestCode == REQUEST_CODE_PRICING_SELECT){
+            if ( resultCode == RESULT_OK){
+                this.isNotPriceSelected = false;
+            }
+        }
+    }
+
+    public void starDataBaseProvider(FirebaseUser firebaseUser) {
+        this.dataBaseProvider = new DataBaseProvider(firebaseUser);
     }
 
     @Override
@@ -114,5 +136,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public boolean isNotPriceSelected() {
+        return this.isNotPriceSelected;
     }
 }

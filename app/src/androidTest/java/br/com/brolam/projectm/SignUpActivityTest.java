@@ -39,9 +39,6 @@ public class SignUpActivityTest implements OnCompleteListener<Void> {
     private static final String USER_NAME = "User";
     private static final String USER_SURNAME = "Test";
     public static final String USER_EMAIL = "test@brolam.com.br";
-    private static final String USER_BIRTH_DAY = "23";
-    private static final String USER_BIRTH_MONTH = "2";
-    private static final String USER_BIRTH_YEAR = "1978";
     public static final String USER_PASSWORD = "123.test";
     private FirebaseAuth firebaseAuth;
     private boolean isSetupCompleted = true;
@@ -97,20 +94,20 @@ public class SignUpActivityTest implements OnCompleteListener<Void> {
         ViewInteraction inputEmail = onView(allOf(withId(R.id.email), isDisplayed()));
         inputEmail.perform(replaceText(USER_EMAIL), closeSoftKeyboard());
 
-        ViewInteraction inputBirthDay = onView(allOf(withId(R.id.birthDay), isDisplayed()));
-        inputBirthDay.perform(replaceText(USER_BIRTH_DAY), closeSoftKeyboard());
-
-        ViewInteraction inputBirthMonth = onView(allOf(withId(R.id.birthMonth), isDisplayed()));
-        inputBirthMonth.perform(replaceText(USER_BIRTH_MONTH), closeSoftKeyboard());
-
-        ViewInteraction inputBirthYear = onView(allOf(withId(R.id.birthYear), isDisplayed()));
-        inputBirthYear.perform(replaceText(USER_BIRTH_YEAR), closeSoftKeyboard());
-
         ViewInteraction inputPassword = onView(allOf(withId(R.id.password), isDisplayed()));
         inputPassword.perform(replaceText(USER_PASSWORD), closeSoftKeyboard());
 
-        ViewInteraction registerButton = onView(allOf(withId(R.id.registerButton),isDisplayed()));
-        registerButton.perform(click());
+        ViewInteraction nextButton = onView(allOf(withId(R.id.nextButton),isDisplayed()));
+        nextButton.perform(click());
+
+        ViewInteraction viewPricingActivity = onView(withId(R.id.activity_pricing_layout));
+        viewPricingActivity.check(matches(isDisplayed()));
+
+        ViewInteraction premiumRadioButton = onView(allOf(withId(R.id.optionPremium),isDisplayed()));
+        premiumRadioButton.perform(click());
+
+        nextButton = onView(allOf(withId(R.id.nextButton),isDisplayed()));
+        nextButton.perform(click());
 
         ViewInteraction viewMainActivity = onView(withId(R.id.activity_main_layout));
         viewMainActivity.check(matches(isDisplayed()));

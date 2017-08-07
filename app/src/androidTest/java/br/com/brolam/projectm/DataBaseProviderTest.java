@@ -17,10 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Calendar;
 import java.util.HashMap;
 
 import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
 import static org.junit.Assert.*;
@@ -34,8 +34,11 @@ import static org.junit.Assert.*;
 public class DataBaseProviderTest implements ValueEventListener {
     private static String TAG = "DataBaseProviderTest";
     private FirebaseUser firebaseUser;
+    private DataBaseProvider dataBaseProvider;
     private HashMap<String, Object> expectedUserProperties = null;
-    private boolean isAttributedExpectedUserProperties = false;
+    private HashMap<String, Object> expectedUserAccount = null;
+    private boolean isSetExpectedUserProperties;
+    private boolean isSetExpectedUserAccount = false;
     private boolean isSetupCompleted = false;
 
     @Before
@@ -54,7 +57,7 @@ public class DataBaseProviderTest implements ValueEventListener {
     }
 
     @Test
-    public void setUserProperties() throws Exception {
+    public void setUserSurname() throws Exception {
         while (this.isSetupCompleted == false){
             Log.i(TAG, "Setup is not completed");
             try {
@@ -63,16 +66,13 @@ public class DataBaseProviderTest implements ValueEventListener {
                 e.printStackTrace();
             }
         }
-
         DataBaseProvider dataBaseProvider = new DataBaseProvider(this.firebaseUser);
         dataBaseProvider.addUserPropertiesListener(this);
         String surName = "Test";
-        Calendar dateOfBirth = Calendar.getInstance();
-        dateOfBirth.set(1978, 2, 23, 0, 0, 0);
-        HashMap<String, Object> userProperties = UserProperties.getNewUserProperties(surName, dateOfBirth.getTime());
+        HashMap<String, Object> userProperties = UserProperties.getNewUserProperties(surName);
         dataBaseProvider.setUserProperties(userProperties);
-        while (this.isAttributedExpectedUserProperties == false){
-            Log.i(TAG, "The expectedUserProperties is not Attributed!");
+        while (this.isSetExpectedUserProperties == false){
+            Log.i(TAG, "The expectedUserProperties UserProperties is not Attributed!");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -82,15 +82,47 @@ public class DataBaseProviderTest implements ValueEventListener {
         assertEquals(this.expectedUserProperties, userProperties);
     }
 
+    @Test
+    public void setUserAccountType() throws Exception {
+        while (this.isSetupCompleted == false){
+            Log.i(TAG, "Setup is not completed");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(this.firebaseUser);
+        dataBaseProvider.addUserAccountListener(this);
+        HashMap<String, Object> userAccount = UserAccount.getNewUserAccount(UserAccount.AccountTypes.PREMIUM);
+        dataBaseProvider.setUserAccount(userAccount);
+        while (this.isSetExpectedUserAccount == false){
+            Log.i(TAG, "The expectedUserAccount is not Attributed!");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        assertEquals(this.expectedUserAccount, userAccount);
+    }
+
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        this.isAttributedExpectedUserProperties = true;
-        this.expectedUserProperties = (HashMap<String, Object>) dataSnapshot.getValue();
+        String referenceFullPath = dataSnapshot.getRef().toString();
+        if ( referenceFullPath.contains(UserProperties.PATH_USER_PROPERTIES)) {
+            this.isSetExpectedUserProperties = true;
+            this.expectedUserProperties = (HashMap<String, Object>) dataSnapshot.getValue();
+        } else if ( referenceFullPath.contains(UserAccount.REFERENCE_NAME)) {
+            this.isSetExpectedUserAccount = true;
+            this.expectedUserAccount = (HashMap<String, Object>) dataSnapshot.getValue();
+        }
 
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-        this.isAttributedExpectedUserProperties = true;
+        this.isSetExpectedUserProperties = true;
+        this.isSetExpectedUserAccount = true;
     }
 }

@@ -83,8 +83,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <include layout="@layout/activity_sing_up_date_of_birth" />
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,12 +103,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/registerButton"
+                android:id="@+id/nextButton"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_register"
+                android:text="@string/action_next"
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp"/>
 

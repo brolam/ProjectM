@@ -7,27 +7,29 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_sing_in">Sign in</string>
     <string name="title_activity_sing_up">Sign up</string>
+    <string name="title_activity_pricing">Pricing</string>
 
     <!-- Strings related to login -->
     <string name="prompt_name">Name</string>
     <string name="prompt_surname">Surname</string>
     <string name="prompt_email">Email</string>
-    <string name="prompt_birth_day">Birth Day</string>
-    <string name="prompt_birth_month">Birth Month</string>
-    <string name="prompt_birth_year">Birth Year</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
+    <string name="action_next">Next</string>
     <string name="action_register">Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_name">This name is too short</string>
     <string name="error_invalid_surname">This surname is too short</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_birth" formatted="false">This date of birth is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_email_or_password">This email ou password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!--Pricing Activity -->
+    <string name="pricing_option_free">Free - Up to three applications</string>
+    <string name="pricing_option_premium">Premium - unlimited applications</string>
 </resources>
