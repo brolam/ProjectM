@@ -68,7 +68,7 @@ public class DataBaseProviderTest implements ValueEventListener {
         DataBaseProvider dataBaseProvider = new DataBaseProvider(this.firebaseUser);
         dataBaseProvider.addUserPropertiesListener(this);
         String surName = "Test";
-        HashMap<String, Object> userProperties = UserProperties.getNewUserProperties(surName);
+        HashMap<String, Object> userProperties = UserProperties.getNewUserProperties(surName, surname);
         dataBaseProvider.setUserProperties(userProperties);
         while (this.isSetExpectedUserProperties == false){
             Log.i(TAG, "The expectedUserProperties UserProperties is not Attributed!");

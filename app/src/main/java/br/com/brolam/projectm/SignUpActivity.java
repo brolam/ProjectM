@@ -141,11 +141,11 @@ public class SignUpActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            createUser(email, password, surname);
+            createUser(email, password, name, surname);
         }
     }
 
-    private void createUser(String email, String password, final String surname) {
+    private void createUser(String email, String password, final String name, final String surname) {
         this.firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -153,7 +153,7 @@ public class SignUpActivity extends AppCompatActivity {
                         try {
                             if (task.isSuccessful()) {
                                 DataBaseProvider dataBaseProvider = new DataBaseProvider(firebaseAuth.getCurrentUser());
-                                dataBaseProvider.setUserProperties(UserProperties.getNewUserProperties(surname));
+                                dataBaseProvider.setUserProperties(UserProperties.getNewUserProperties(name, surname));
                                 Log.d(TAG, "createUserWithEmail:success");
                                 SignUpActivity.this.setResult(RESULT_OK);
                                 SignUpActivity.this.selectPrice();

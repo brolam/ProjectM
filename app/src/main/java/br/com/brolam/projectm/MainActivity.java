@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -161,6 +162,23 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (UserProperties.isReferenceUserAccount(dataSnapshot.getRef()))
             this.userProperties = (HashMap<String, Object>) dataSnapshot.getValue();
+        updateViewUserProfile();
+    }
+
+    private void updateViewUserProfile() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        if ( this.userProperties != null){
+            FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
+            String fullName = UserProperties.getFullName( this.userProperties);
+            ((TextView)headerView.findViewById(R.id.userFullName)).setText(fullName);
+            ((TextView)headerView.findViewById(R.id.userEmail)).setText(firebaseUser.getEmail());
+        }
+
+        if ( this.userAccount != null){
+            String userAccountType = this.userAccount.get(UserAccount.TYPE).toString();
+            ((TextView)headerView.findViewById(R.id.userAccountType)).setText(userAccountType);
+        }
     }
 
     @Override
