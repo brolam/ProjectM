@@ -1,9 +1,5 @@
 package br.com.brolam.projectm.data.models;
 
-import android.text.TextUtils;
-
-import com.google.firebase.database.DatabaseReference;
-
 import java.util.HashMap;
 
 /**
@@ -29,14 +25,15 @@ public class UserAccount {
         return result;
     }
 
-    public static boolean isReferenceUserAccount(DatabaseReference ref) {
-        return ref.getRef().toString().contains(REFERENCE_NAME);
+    public static boolean isReferenceUserAccount(String fullPathReference) {
+        return fullPathReference.contains(REFERENCE_NAME);
     }
 
     public static boolean isValid(HashMap<String, Object> userAccount) {
         if (userAccount == null) return false;
         if (userAccount.containsKey(TYPE) == false ) return false;
-        if (userAccount.get(TYPE).equals(AccountTypes.UNDEFINED)) return false;
+        AccountTypes accountType = AccountTypes.valueOf((String) userAccount.get(TYPE));
+        if (accountType == AccountTypes.UNDEFINED) return false;
         return true;
     }
 }

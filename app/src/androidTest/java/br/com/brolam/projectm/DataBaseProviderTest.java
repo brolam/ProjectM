@@ -54,7 +54,7 @@ public class DataBaseProviderTest implements ValueEventListener {
     }
 
     @Test
-    public void setUserSurname() throws Exception {
+    public void setUserProperties() throws Exception {
         while (this.isSetupCompleted == false){
             Log.i(TAG, "Setup is not completed");
             try {

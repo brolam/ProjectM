@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        if (UserAccount.isReferenceUserAccount(dataSnapshot.getRef())) {
+        if (UserAccount.isReferenceUserAccount(dataSnapshot.getRef().toString())) {
             this.userAccount = (HashMap<String, Object>) dataSnapshot.getValue();
             if (UserAccount.isValid(this.userAccount) == false ){
                 PricingActivity.select(this, REQUEST_CODE_PRICING_SELECT);
