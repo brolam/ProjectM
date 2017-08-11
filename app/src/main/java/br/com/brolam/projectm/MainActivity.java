@@ -38,6 +38,7 @@ import br.com.brolam.projectm.data.models.UserProperties;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener, JobHolder.JobHolderClickable {
     private static int REQUEST_CODE_PRICING_SELECT = 100;
+    private static int REQUEST_CODE_JOB_SELECT = 101;
 
     private FirebaseAuth firebaseAuth;
     private DataBaseProvider dataBaseProvider = null;
@@ -161,8 +162,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_log_off) {
+            this.firebaseAuth.signOut();
+            this.finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_layout);
@@ -208,6 +210,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onJobClick(String jobKey) {
-
+        JobActivity.show(this, jobKey, REQUEST_CODE_JOB_SELECT);
     }
 }

@@ -74,4 +74,12 @@ public class DataBaseProvider {
         this.queryJobs.addChildEventListener(childEventListener);
     }
 
+    public void addOneJobListener(ValueEventListener valueEventListener, String jobKey){
+        this.queryJobs.getRef().child(jobKey).addValueEventListener(valueEventListener);
+    }
+
+    public void removeOneJobListener(ValueEventListener valueEventListener, String jobKey){
+        this.queryJobs.getRef().child(jobKey).removeEventListener(valueEventListener);
+    }
+
 }
