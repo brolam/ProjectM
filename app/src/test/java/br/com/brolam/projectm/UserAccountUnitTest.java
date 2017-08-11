@@ -9,6 +9,8 @@ import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.UserAccount;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class UserAccountUnitTest {
 
@@ -40,6 +42,14 @@ public class UserAccountUnitTest {
     public void isUserAccountReference(){
         String fullPathReference = "https://projectm-e2a21.firebaseio.com/job/5PQBNu6346Tz3eqsOzSUZOuDEiv2";
         assertEquals(true, Job.isJobReference(fullPathReference));
+
+    }
+
+    @Test
+    public void isValidParseException() {
+        HashMap<String, Object> userAccount = new HashMap<>();
+        userAccount.put(UserAccount.TYPE, "INVALID_TYPE");
+        assertFalse(UserAccount.isValid(userAccount));
 
     }
 }

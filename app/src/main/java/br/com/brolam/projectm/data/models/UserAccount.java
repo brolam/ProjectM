@@ -11,8 +11,6 @@ public class UserAccount {
     public static final String REFERENCE_NAME = "userAccount";
     public static final String TYPE = "type";
 
-
-
     public enum AccountTypes {
         UNDEFINED,
         FREE,
@@ -30,10 +28,14 @@ public class UserAccount {
     }
 
     public static boolean isValid(HashMap<String, Object> userAccount) {
-        if (userAccount == null) return false;
-        if (userAccount.containsKey(TYPE) == false ) return false;
-        AccountTypes accountType = AccountTypes.valueOf((String) userAccount.get(TYPE));
-        if (accountType == AccountTypes.UNDEFINED) return false;
-        return true;
+        try {
+            if (userAccount == null) return false;
+            if (userAccount.containsKey(TYPE) == false) return false;
+            AccountTypes accountType = AccountTypes.valueOf((String) userAccount.get(TYPE));
+            if (accountType == AccountTypes.UNDEFINED) return false;
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

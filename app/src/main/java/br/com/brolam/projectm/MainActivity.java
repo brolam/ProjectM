@@ -180,10 +180,6 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (UserProperties.isReferenceUserAccount(dataSnapshot.getRef())) {
             this.userProperties = (HashMap<String, Object>) dataSnapshot.getValue();
-        } else if (Job.isJobReference(fullPathReference)){
-            for( HashMap hashMap : (List<HashMap>) dataSnapshot.getValue() ){
-                Log.i("Job", (String)hashMap.get(Job.TITLE));
-            }
         }
         updateViewUserProfile();
     }
