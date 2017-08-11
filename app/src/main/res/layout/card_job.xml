@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            tools:text="Android Especialist"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+
+        <TextView
+            android:id="@+id/summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_text_margin"
+            android:layout_below="@id/title"
+            tools:text="Mobile Software Engineer 2+ years of experience with OO languages is comfortable with the entire web stack, from front-end HTML, CSS and JS to server-side Ruby-on-Rails"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            />
+
+        <TextView
+            android:id="@+id/publishedDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_text_margin"
+            android:layout_below="@id/summary"
+            tools:text="One minute ago"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

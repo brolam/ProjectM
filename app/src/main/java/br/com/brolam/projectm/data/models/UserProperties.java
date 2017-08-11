@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class UserProperties {
 
-    public static final String PATH_USER_PROPERTIES = "userProperties";
+    public static final String REFERENCE_NAME = "userProperties";
     public static final String NAME = "name";
     public static final String SURNAME = "surname";
 
@@ -50,7 +50,7 @@ public class UserProperties {
     }
 
     public static boolean isReferenceUserAccount(DatabaseReference ref) {
-        return ref.getRef().toString().contains(PATH_USER_PROPERTIES);
+        return ref.getRef().toString().contains(REFERENCE_NAME);
     }
 
     public static String getFullName(HashMap<String, Object> userProperties) {

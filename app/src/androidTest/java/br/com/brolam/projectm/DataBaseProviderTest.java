@@ -17,9 +17,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
@@ -79,6 +81,30 @@ public class DataBaseProviderTest implements ValueEventListener {
     }
 
     @Test
+    public void addJobs(){
+        while (this.isSetupCompleted == false){
+            Log.i(TAG, "Setup is not completed");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        HashMap<String, Object> newJob01 = Job.getNewJob("Mobile Software Engineer", "2+ years of experience with OO languages", Calendar.getInstance().getTime());
+        HashMap<String, Object> newJob02  = Job.getNewJob("Software engineer, full stack", "is comfortable with the entire web stack, from front-end HTML, CSS and JS to server-side Ruby-on-Rails", Calendar.getInstance().getTime());
+        HashMap<String, Object> newJob03  = Job.getNewJob("Software Engineer (Ruby)", "Ruby skills Unit, integration and acceptance testing", Calendar.getInstance().getTime());
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(this.firebaseUser);
+        /*
+        dataBaseProvider.addJobsListener(this);
+        dataBaseProvider.addJob(newJob01);
+        dataBaseProvider.addJob(newJob02);
+        dataBaseProvider.addJob(newJob03);
+        */
+
+    }
+
+    @Test
     public void setUserAccountType() throws Exception {
         while (this.isSetupCompleted == false){
             Log.i(TAG, "Setup is not completed");
@@ -106,7 +132,7 @@ public class DataBaseProviderTest implements ValueEventListener {
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         String referenceFullPath = dataSnapshot.getRef().toString();
-        if ( referenceFullPath.contains(UserProperties.PATH_USER_PROPERTIES)) {
+        if ( referenceFullPath.contains(UserProperties.REFERENCE_NAME)) {
             this.isSetExpectedUserProperties = true;
             this.expectedUserProperties = (HashMap<String, Object>) dataSnapshot.getValue();
         } else if ( referenceFullPath.contains(UserAccount.REFERENCE_NAME)) {

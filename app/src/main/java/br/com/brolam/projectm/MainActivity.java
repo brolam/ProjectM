@@ -1,9 +1,12 @@
 package br.com.brolam.projectm;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,18 +20,23 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.List;
 
+import br.com.brolam.projectm.adapters.JobAdapter;
+import br.com.brolam.projectm.adapters.holders.JobHolder;
 import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener, JobHolder.JobHolderClickable {
     private static int REQUEST_CODE_PRICING_SELECT = 100;
 
     private FirebaseAuth firebaseAuth;
@@ -36,14 +44,21 @@ public class MainActivity extends AppCompatActivity
     private HashMap<String, Object> userProperties = null;
     private HashMap<String, Object> userAccount = null;
 
+
+    private JobAdapter jobAdapter;
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        this.recyclerView = (RecyclerView) this.findViewById(R.id.recyclerView);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.firebaseAuth = FirebaseAuth.getInstance();
+        this.jobAdapter = new JobAdapter(this, this);
+        this.recyclerView.setAdapter(this.jobAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +101,7 @@ public class MainActivity extends AppCompatActivity
             this.dataBaseProvider = new DataBaseProvider(firebaseUser);
             this.dataBaseProvider.addUserAccountListener(this);
             this.dataBaseProvider.addUserPropertiesListener(this);
+            this.dataBaseProvider.addQueryJobsListener(this.jobAdapter);
         }
     }
 
@@ -93,6 +109,7 @@ public class MainActivity extends AppCompatActivity
         if ( this.dataBaseProvider != null) {
             this.dataBaseProvider.removeUserAccountListener(this);
             this.dataBaseProvider.removeUserPropertiesListener(this);
+            this.dataBaseProvider.removeQueryJobsListener(this.jobAdapter);
         }
     }
 
@@ -155,14 +172,25 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        if (UserAccount.isReferenceUserAccount(dataSnapshot.getRef().toString())) {
+        String fullPathReference = dataSnapshot.getRef().toString();
+        if (UserAccount.isReferenceUserAccount(fullPathReference)) {
             this.userAccount = (HashMap<String, Object>) dataSnapshot.getValue();
             if (UserAccount.isValid(this.userAccount) == false ){
                 PricingActivity.select(this, REQUEST_CODE_PRICING_SELECT);
             }
-        } else if (UserProperties.isReferenceUserAccount(dataSnapshot.getRef()))
+        } else if (UserProperties.isReferenceUserAccount(dataSnapshot.getRef())) {
             this.userProperties = (HashMap<String, Object>) dataSnapshot.getValue();
+        } else if (Job.isJobReference(fullPathReference)){
+            for( HashMap hashMap : (List<HashMap>) dataSnapshot.getValue() ){
+                Log.i("Job", (String)hashMap.get(Job.TITLE));
+            }
+        }
         updateViewUserProfile();
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
     }
 
     private void updateViewUserProfile() {
@@ -181,8 +209,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     @Override
-    public void onCancelled(DatabaseError databaseError) {
+    public void onJobClick(String jobKey) {
 
     }
 }

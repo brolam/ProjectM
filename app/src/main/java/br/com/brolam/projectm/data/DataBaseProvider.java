@@ -1,14 +1,18 @@
 package br.com.brolam.projectm.data;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-import br.com.brolam.projectm.MainActivity;
+import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
@@ -21,6 +25,7 @@ public class DataBaseProvider {
     private static FirebaseDatabase firebaseDatabase;
     private DatabaseReference referenceUserProperties;
     private DatabaseReference referenceUserAccount;
+    private Query queryJobs;
 
     public DataBaseProvider(FirebaseUser firebaseUser) {
         this.firebaseUser = firebaseUser;
@@ -31,8 +36,9 @@ public class DataBaseProvider {
         }
         if ( firebaseUser == null )
             throw new RuntimeException("Firebase User is not sign Up!");
-        this.referenceUserProperties = firebaseDatabase.getReference(UserProperties.PATH_USER_PROPERTIES).child(this.firebaseUser.getUid());
+        this.referenceUserProperties = firebaseDatabase.getReference(UserProperties.REFERENCE_NAME).child(this.firebaseUser.getUid());
         this.referenceUserAccount = firebaseDatabase.getReference(UserAccount.REFERENCE_NAME).child(this.firebaseUser.getUid());
+        this.queryJobs = firebaseDatabase.getReference(Job.REFERENCE_NAME).orderByPriority();
     }
 
     public void setUserProperties(HashMap<String, Object> userProperties) {
@@ -60,7 +66,12 @@ public class DataBaseProvider {
         this.referenceUserAccount.removeEventListener(valueEventListener);
     }
 
-    public void queryUserAccount() {
-        this.referenceUserAccount.orderByKey();
+    public void addQueryJobsListener(ChildEventListener childEventListener) {
+        this.queryJobs.addChildEventListener(childEventListener);
     }
+
+    public void removeQueryJobsListener(ChildEventListener childEventListener) {
+        this.queryJobs.addChildEventListener(childEventListener);
+    }
+
 }
