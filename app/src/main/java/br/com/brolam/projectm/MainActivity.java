@@ -207,9 +207,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     @Override
-    public void onJobClick(String jobKey) {
-        JobActivity.show(this, jobKey, REQUEST_CODE_JOB_SELECT);
+    public void onJobClick(String jobKey, HashMap job) {
+        JobActivity.show(this, jobKey, job, REQUEST_CODE_JOB_SELECT);
     }
 }

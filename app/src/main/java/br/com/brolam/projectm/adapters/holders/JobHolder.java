@@ -17,7 +17,7 @@ import br.com.brolam.projectm.data.models.Job;
 public class JobHolder extends RecyclerView.ViewHolder   {
 
     public interface JobHolderClickable{
-        void onJobClick(String jobKey);
+        void onJobClick(String jobKey, HashMap job);
     }
 
     private TextView title;
@@ -31,14 +31,14 @@ public class JobHolder extends RecyclerView.ViewHolder   {
         this.publishedDate = (TextView)itemView.findViewById(R.id.publishedDate);
     }
 
-    public void bind(final String jobKey, HashMap job, final JobHolderClickable jobHolderClickable ){
+    public void bind(final String jobKey, final HashMap job, final JobHolderClickable jobHolderClickable ){
         this.title.setText((String)job.get(Job.TITLE));
         this.summary.setText((String)job.get(Job.SUMMARY));
         this.publishedDate.setText(getTextPublished((Long)job.get(Job.PUBLISHED_DATE)));
         this.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                jobHolderClickable.onJobClick(jobKey);
+                jobHolderClickable.onJobClick(jobKey, job);
             }
         });
     }
