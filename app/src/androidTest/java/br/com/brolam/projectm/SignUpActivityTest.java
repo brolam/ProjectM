@@ -2,6 +2,7 @@ package br.com.brolam.projectm;
 
 
 import android.support.annotation.NonNull;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -19,8 +20,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import br.com.brolam.projectm.base.ActivityBaseTest;
+
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -33,7 +35,7 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SignUpActivityTest implements OnCompleteListener<Void> {
+public class SignUpActivityTest extends ActivityBaseTest implements OnCompleteListener<Void> {
 
     private static final String TAG = "SignUpActivityTest";
     private static final String USER_NAME = "User";
@@ -69,7 +71,7 @@ public class SignUpActivityTest implements OnCompleteListener<Void> {
     }
 
     @Test
-    public void userSignUp() {
+    public void doTest() throws InterruptedException {
 
         while (this.isSetupCompleted == false){
             Log.i(TAG, "Setup is not completed");
@@ -80,34 +82,34 @@ public class SignUpActivityTest implements OnCompleteListener<Void> {
             }
         }
 
-        pressBack();
+        hideKeyboard();
 
         ViewInteraction signUpButton = onView(allOf(withId(R.id.sign_up_button)));
-        signUpButton.perform(click());
+        clickAndWait(signUpButton);
 
         ViewInteraction inputName = onView(allOf(withId(R.id.name), isDisplayed()));
-        inputName.perform(replaceText(USER_NAME), closeSoftKeyboard());
+        setTextAndWait(inputName, USER_NAME);
 
         ViewInteraction inputSurname = onView(allOf(withId(R.id.surname), isDisplayed()));
-        inputSurname.perform(replaceText(USER_SURNAME), closeSoftKeyboard());
+        setTextAndWait(inputSurname, USER_SURNAME);
 
         ViewInteraction inputEmail = onView(allOf(withId(R.id.email), isDisplayed()));
-        inputEmail.perform(replaceText(USER_EMAIL), closeSoftKeyboard());
+        setTextAndWait(inputEmail, USER_EMAIL);
 
         ViewInteraction inputPassword = onView(allOf(withId(R.id.password), isDisplayed()));
-        inputPassword.perform(replaceText(USER_PASSWORD), closeSoftKeyboard());
+        setTextAndWait(inputPassword, USER_PASSWORD);
 
         ViewInteraction nextButton = onView(allOf(withId(R.id.nextButton),isDisplayed()));
-        nextButton.perform(click());
+        clickAndWait(nextButton);
 
         ViewInteraction viewPricingActivity = onView(withId(R.id.activity_pricing_layout));
-        viewPricingActivity.check(matches(isDisplayed()));
+        checkIsDisplayed(viewPricingActivity);
 
         ViewInteraction premiumRadioButton = onView(allOf(withId(R.id.optionPremium),isDisplayed()));
-        premiumRadioButton.perform(click());
+        clickAndWait(premiumRadioButton);
 
         nextButton = onView(allOf(withId(R.id.nextButton),isDisplayed()));
-        nextButton.perform(click());
+        clickAndWait(nextButton);
 
         ViewInteraction viewMainActivity = onView(withId(R.id.activity_main_layout));
         viewMainActivity.check(matches(isDisplayed()));

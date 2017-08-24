@@ -14,8 +14,11 @@ import com.google.firebase.database.ValueEventListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Date;
 import java.util.HashMap;
 import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.JobApplication;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
@@ -32,8 +35,10 @@ public class DataBaseProviderTest implements ValueEventListener {
     private FirebaseUser firebaseUser;
     private HashMap<String, Object> expectedUserProperties = null;
     private HashMap<String, Object> expectedUserAccount = null;
+    private HashMap<String, Object> expectedJobApplications = null;
     private boolean isSetExpectedUserProperties;
     private boolean isSetExpectedUserAccount = false;
+    private boolean isSetExpectedJobApplication = false;
     private boolean isSetupCompleted = false;
 
     @Before
@@ -97,6 +102,28 @@ public class DataBaseProviderTest implements ValueEventListener {
             }
         }
         assertEquals(this.expectedUserAccount, userAccount);
+    }
+
+    @Test
+    public void setJobApplication(){
+        while (this.isSetupCompleted == false){
+            Log.i(TAG, "Setup is not completed");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        String userKey = "5PQBNu6346Tz3eqsOzSUZOuDEiv2";
+        String jobKey = "5PQBNu6346Tz3eqsOzSUZOuDEiv3";
+        Long applicationDate = new Date().getTime();
+        HashMap newApplication = JobApplication.getNewApplication(userKey, jobKey, applicationDate);
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(this.firebaseUser);
+        //dataBaseProvider.addJobApplicationListener(this);
+        //dataBaseProvider.setJobApplication(newApplication);
+        assertTrue(this.expectedJobApplications.containsKey(jobKey));
+        HashMap expectedJobApplication = (HashMap) this.expectedJobApplications.get(jobKey);
+        assertEquals(expectedJobApplication.get(JobApplication.APPLICATION_DATE), applicationDate);
     }
 
     @Override

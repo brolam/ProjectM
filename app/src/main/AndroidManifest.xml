@@ -32,6 +32,10 @@
         <activity
             android:name=".JobActivity"
             android:label="@string/title_activity_job"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".JobApplicationActivity"
+            android:label="@string/title_activity_job_application"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

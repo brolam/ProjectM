@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="br.com.brolam.projectm.JobApplicationActivity"
+    tools:showIn="@layout/activity_job_application"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:id="@+id/lineLayoutSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+        <TextView
+            android:id="@+id/summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_text_margin"
+            tools:text="Mobile Software Engineer 2+ years of experience with OO languages is comfortable with the entire web stack, from front-end HTML, CSS and JS to server-side Ruby-on-Rails"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorWhite" />
+        />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lineLayoutSummary"
+       >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/applicationByPhoneOption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/job_application_by_smart_phone"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    style="@style/Checkbox.Pricing"/>
+
+
+                <RadioButton
+                    android:id="@+id/applicationByComputerOption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/job_application_by_computer"
+                    android:layout_marginBottom="48dp"
+                    style="@style/Checkbox.Pricing"
+                    />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
