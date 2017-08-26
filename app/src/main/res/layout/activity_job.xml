@@ -61,34 +61,74 @@
                 />
             </LinearLayout>
 
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:background="@color/colorPrimary"
-                app:layout_collapseMode="pin"
                 android:elevation="4dp">
-                <TextView
-                    android:id="@+id/publishedDate"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/text_margin"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="@dimen/default_margin"
-                    tools:text="One minute ago"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorWhite" />
+                    >
+                    <TextView
+                        android:id="@+id/publishedDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        tools:text="One minute ago"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorWhite" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:text="Published"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/colorWhite" />
 
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:id="@+id/linearLayoutApplicationDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/default_margin"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    tools:visibility="visible"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/applicationDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        tools:text="One minute ago"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorWhite"
+                       />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:text="Applied"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/colorWhite"
+                       />
+                </LinearLayout>
                 <Button
                     android:id="@+id/buttonToApply"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_text_margin"
-                    android:layout_marginBottom="@dimen/default_text_margin"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/default_margin"
                     android:text="@string/action_to_apply" />
             </RelativeLayout>

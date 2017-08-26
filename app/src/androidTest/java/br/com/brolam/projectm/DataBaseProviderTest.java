@@ -114,13 +114,20 @@ public class DataBaseProviderTest implements ValueEventListener {
                 e.printStackTrace();
             }
         }
-        String userKey = "5PQBNu6346Tz3eqsOzSUZOuDEiv2";
         String jobKey = "5PQBNu6346Tz3eqsOzSUZOuDEiv3";
         Long applicationDate = new Date().getTime();
-        HashMap newApplication = JobApplication.getNewApplication(userKey, jobKey, applicationDate);
+        HashMap newApplication = JobApplication.getNewApplication(jobKey, applicationDate);
         DataBaseProvider dataBaseProvider = new DataBaseProvider(this.firebaseUser);
-        //dataBaseProvider.addJobApplicationListener(this);
-        //dataBaseProvider.setJobApplication(newApplication);
+        dataBaseProvider.addJobApplicationListener(this);
+        dataBaseProvider.setJobApplication(newApplication);
+        while (this.isSetExpectedJobApplication == false){
+            Log.i(TAG, "The isSetExpectedJobApplication is not Attributed!");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         assertTrue(this.expectedJobApplications.containsKey(jobKey));
         HashMap expectedJobApplication = (HashMap) this.expectedJobApplications.get(jobKey);
         assertEquals(expectedJobApplication.get(JobApplication.APPLICATION_DATE), applicationDate);
@@ -135,6 +142,9 @@ public class DataBaseProviderTest implements ValueEventListener {
         } else if ( referenceFullPath.contains(UserAccount.REFERENCE_NAME)) {
             this.isSetExpectedUserAccount = true;
             this.expectedUserAccount = (HashMap<String, Object>) dataSnapshot.getValue();
+        } else if ( JobApplication.isReference(referenceFullPath)){
+            this.isSetExpectedJobApplication = true;
+            this.expectedJobApplications = (HashMap<String, Object>) dataSnapshot.getValue();
         }
 
     }

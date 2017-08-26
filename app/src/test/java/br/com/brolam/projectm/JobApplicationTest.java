@@ -30,11 +30,10 @@ public class JobApplicationTest {
 
     @Test
     public void getNewApplication(){
-        String userKey = "5PQBNu6346Tz3eqsOzSUZOuDEiv2";
         String jobKey = "5PQBNu6346Tz3eqsOzSUZOuDEiv3";
         Long applicationDate = new Date().getTime();
-        HashMap newJobApplication = JobApplication.getNewApplication(userKey, jobKey, applicationDate);
-        String applicationDateExpectedPath = String.format("%s/%s/%s/%s", JobApplication.REFERENCE_NAME, userKey, jobKey, JobApplication.APPLICATION_DATE);
+        HashMap newJobApplication = JobApplication.getNewApplication(jobKey, applicationDate);
+        String applicationDateExpectedPath = String.format("%s/%s", jobKey, JobApplication.APPLICATION_DATE);
         assertTrue(newJobApplication.containsKey(applicationDateExpectedPath));
         assertEquals(applicationDate, newJobApplication.get(applicationDateExpectedPath));
 

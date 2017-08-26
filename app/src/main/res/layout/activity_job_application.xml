@@ -23,6 +23,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!-- progress -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:background="@color/colorPrimary"/>
+
     <include layout="@layout/content_job_application" />
 
 

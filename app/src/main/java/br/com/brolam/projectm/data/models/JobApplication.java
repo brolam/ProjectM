@@ -21,11 +21,9 @@ public class JobApplication {
         return String.format("cvs/%s/%s/curriculum.pdf", userKey, jobKey);
     }
 
-    public static HashMap<String, Object>  getNewApplication(String userKey, String jobKey, Long applicationDate) {
+    public static HashMap<String, Object>  getNewApplication(String jobKey, Long applicationDate) {
         HashMap<String, Object> newApplication = new HashMap<>();
-        String applicationUserPath = REFERENCE_NAME + "/"  + userKey;
-        String applicationJobPath = applicationUserPath + "/"  + jobKey;
-        newApplication.put(applicationJobPath + "/" + APPLICATION_DATE, applicationDate);
+        newApplication.put(jobKey + "/" + APPLICATION_DATE, applicationDate);
         return newApplication;
     }
 }

@@ -10,11 +10,20 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.HashMap;
 import br.com.brolam.projectm.adapters.holders.JobHolder;
+import br.com.brolam.projectm.data.DataBaseProvider;
 import br.com.brolam.projectm.data.models.Job;
+import br.com.brolam.projectm.data.models.JobApplication;
 
-public class JobActivity extends AppCompatActivity implements View.OnClickListener {
+public class JobActivity extends AppCompatActivity implements View.OnClickListener, ValueEventListener {
     private static final String JOB_KEY = "jobKey";
     private static final String JOB = "job";
     private static final int REQUEST_JOB_TO_APPLY = 100;
@@ -22,9 +31,12 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     private Toolbar toolbar;
     private TextView summary;
     private TextView publishedDate;
+    private View linearLayoutApplicationDate;
+    private TextView applicationDate;
     private Button buttonToApply;
     private TextView description;
     private HashMap job;
+    private DataBaseProvider dataBaseProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +48,8 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
         }
         this.summary  = (TextView) this.findViewById(R.id.summary);
         this.publishedDate  = (TextView) this.findViewById(R.id.publishedDate);
+        this.applicationDate  = (TextView) this.findViewById(R.id.applicationDate);
+        this.linearLayoutApplicationDate = this.findViewById(R.id.linearLayoutApplicationDate);
         this.description = (TextView) this.findViewById(R.id.description);
         this.buttonToApply = (Button) this.findViewById(R.id.buttonToApply);
         this.job = (HashMap) getIntent().getSerializableExtra(JOB);
@@ -43,7 +57,21 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
             this.finish();
         }
         buttonToApply.setOnClickListener(this);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.dataBaseProvider = new DataBaseProvider(firebaseUser);
         update();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.dataBaseProvider.addJobApplicationListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.dataBaseProvider.removeJobApplicationListener(this);
     }
 
     @Override
@@ -92,4 +120,26 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
                 .setAction(R.string.app_name, null).show();
 
     }
+
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        String jobKey = getIntent().getStringExtra(JOB_KEY);
+        HashMap<String, Object>  jobApplications = (HashMap<String, Object>) dataSnapshot.getValue();
+        if ( jobApplications.containsKey(jobKey) ){
+            showJobApplication((HashMap<String, Object>)jobApplications.get(jobKey));
+        }
+    }
+
+    private void showJobApplication(HashMap<String, Object> jobApplication) {
+        String strApplicationDate = JobHolder.getTextPublished((Long) jobApplication.get(JobApplication.APPLICATION_DATE));
+        this.linearLayoutApplicationDate.setVisibility(View.VISIBLE);
+        this.applicationDate.setText(strApplicationDate);
+        this.buttonToApply.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+
 }

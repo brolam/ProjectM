@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 import br.com.brolam.projectm.data.models.Job;
+import br.com.brolam.projectm.data.models.JobApplication;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
@@ -25,6 +26,7 @@ public class DataBaseProvider {
     private static FirebaseDatabase firebaseDatabase;
     private DatabaseReference referenceUserProperties;
     private DatabaseReference referenceUserAccount;
+    private DatabaseReference referenceJobApplication;
     private Query queryJobs;
 
     public DataBaseProvider(FirebaseUser firebaseUser) {
@@ -38,6 +40,7 @@ public class DataBaseProvider {
             throw new RuntimeException("Firebase User is not sign Up!");
         this.referenceUserProperties = firebaseDatabase.getReference(UserProperties.REFERENCE_NAME).child(this.firebaseUser.getUid());
         this.referenceUserAccount = firebaseDatabase.getReference(UserAccount.REFERENCE_NAME).child(this.firebaseUser.getUid());
+        this.referenceJobApplication = firebaseDatabase.getReference(JobApplication.REFERENCE_NAME).child(this.firebaseUser.getUid());
         this.queryJobs = firebaseDatabase.getReference(Job.REFERENCE_NAME).orderByPriority();
     }
 
@@ -80,6 +83,18 @@ public class DataBaseProvider {
 
     public void removeOneJobListener(ValueEventListener valueEventListener, String jobKey){
         this.queryJobs.getRef().child(jobKey).removeEventListener(valueEventListener);
+    }
+
+    public void setJobApplication(HashMap jobApplication) {
+        this.referenceJobApplication.updateChildren(jobApplication);
+    }
+
+    public void addJobApplicationListener(ValueEventListener valueEventListener) {
+        this.referenceJobApplication.addValueEventListener(valueEventListener);
+    }
+
+    public void removeJobApplicationListener(ValueEventListener valueEventListener) {
+        this.referenceJobApplication.removeEventListener(valueEventListener);
     }
 
 }

@@ -1,8 +1,12 @@
 package br.com.brolam.projectm;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,12 +23,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import br.com.brolam.projectm.data.DataBaseProvider;
 import br.com.brolam.projectm.data.models.JobApplication;
 
 public class JobApplicationActivity extends AppCompatActivity implements View.OnClickListener, OnFailureListener, OnSuccessListener<UploadTask.TaskSnapshot> {
@@ -34,11 +36,14 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
     private static final String TITLE = "title";
     private static final String SUMMARY = "summary";
     Toolbar toolbar;
+    private View progressView;
+    private View contentLayout;
     private TextView summary;
     private RadioButton applicationByPhoneOption;
     private RadioButton applicationByComputerOption;
     private FirebaseUser firebaseUser;
     private FirebaseStorage firebaseStorage;
+    private DataBaseProvider dataBaseProvider;
     private Uri uriFileCV = null;
 
     @Override
@@ -46,6 +51,9 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_application);
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        this.contentLayout = findViewById(R.id.contentLayout);
+        this.progressView = findViewById(R.id.progressBar);
         this.summary = (TextView) findViewById(R.id.summary);
         this.applicationByPhoneOption = (RadioButton) findViewById(R.id.applicationByPhoneOption);
         this.applicationByComputerOption = (RadioButton) findViewById(R.id.applicationByComputerOption);
@@ -54,8 +62,11 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
         this.applicationByComputerOption.setOnClickListener(this);
         this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         this.firebaseStorage = FirebaseStorage.getInstance();
+        this.dataBaseProvider = new DataBaseProvider(this.firebaseUser);
         updateScreen();
     }
+
+
 
     private void updateScreen() {
         Intent intent = getIntent();
@@ -83,7 +94,6 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
     //https://developer.android.com/guide/topics/providers/document-provider.html
     public void performFileSearch() {
 
-
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
         // browser.
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -97,7 +107,6 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
         // To search for all documents available via installed storage providers,
         // it would be "*/*".
         intent.setType("application/pdf");
-
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
@@ -136,18 +145,65 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
             }
             uploadTask.addOnFailureListener(this);
             uploadTask.addOnSuccessListener(this);
+            showProgress(true);
         }
     }
 
     @Override
     public void onFailure(@NonNull Exception e) {
         Log.i(JobApplicationActivity.class.getName(), e.getMessage());
+        showProgress(false);
     }
 
     @Override
     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
         Log.i(JobApplicationActivity.class.getName(), taskSnapshot.toString());
+        this.saveJobApplication();
+    }
+
+    private void saveJobApplication() {
+        String jobKey = getIntent().getStringExtra(JOB_KEY);
+        HashMap newJobApplication = JobApplication.getNewApplication(jobKey, new Date().getTime());
+        this.dataBaseProvider.setJobApplication(newJobApplication);
+        showProgress(false);
         this.setResult(RESULT_OK);
         this.finish();
     }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            contentLayout.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            contentLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
 }

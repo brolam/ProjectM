@@ -2,9 +2,5 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.brolam.projectm.JobActivity">
-    <item
-        android:id="@+id/action_to_apply"
-        android:orderInCategory="100"
-        android:title="@string/action_to_apply"
-        app:showAsAction="always" />
+
 </menu>
