@@ -78,6 +78,17 @@
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
       <form>
+        <div class="radio">
+          <label class="radio-inline">
+            <input type="radio" name="jobType" id="jobType_vacant" value="VACANT" checked >Vagas
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="jobType" id="jobType_internship" value="INTERNSHIP">Estágios
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="jobType" id="jobType_contest" value="CONTEST">Concursos
+          </label>
+        </div>
         <div class="form-group">
           <label for="inputTitle">Título</label>
           <input type="text" class="form-control" id="inputTitle" placeholder="Título">
@@ -120,18 +131,19 @@
           document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
         }
 
-        var inputTitle = document.getElementById('inputTitle');
-        var inputSummary = document.getElementById('inputSummary');
-        var inputDescription = document.getElementById('inputDescription');
-        var addJobButton = document.getElementById('addJobButton');
-        addJobButton.onclick = function() { addJob();};
-
-        function addJob(){
-           var nowDateTime = new Date().getTime(); 
+        var inputTitle =  $("#inputTitle");
+        var inputSummary = $("#inputSummary");
+        var inputDescription = $("#inputDescription");
+        var addJobButton = $("#addJobButton");
+        
+        var addJob = function() {
+           var nowDateTime = new Date().getTime();
+           var jobTypeValue = $("input[name='jobType']:checked").val();
            var postJobData = {
-            title: inputTitle.value,
-            summary: inputSummary.value,
-            description: inputDescription.value,
+            jobType: jobTypeValue, 
+            title: inputTitle.val(),
+            summary: inputSummary.val(),
+            description: inputDescription.val(),
             publishedDate: nowDateTime,
             '.priority': nowDateTime
           };
@@ -140,10 +152,11 @@
           var newJob = {};
           newJob[newJobKey] = postJobData;
           jobRef.update(newJob);
-          inputTitle.value = '';
-          inputSummary.value = '';
-           $("#inputDescription").val("");
+          inputTitle.val("");
+          inputSummary.val("");
+          inputDescription.val("");
         };
+        addJobButton.on( "click",  addJob);
 
       });
     </script>

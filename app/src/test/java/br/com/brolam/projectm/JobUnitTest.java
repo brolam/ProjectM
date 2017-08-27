@@ -17,6 +17,18 @@ public class JobUnitTest {
     public void isJobReference(){
         String fullPathReference = "https://projectm-e2a21.firebaseio.com/job/5PQBNu6346Tz3eqsOzSUZOuDEiv2";
         assertEquals(true, Job.isJobReference(fullPathReference));
+    }
 
+    @Test
+    public void isJobType(){
+        HashMap jobVacant = new HashMap();
+        HashMap jobInternship = new HashMap();
+        HashMap jobContest = new HashMap();
+        jobVacant.put(Job.JOB_TYPE, "VACANT");
+        jobInternship.put(Job.JOB_TYPE, "INTERNSHIP");
+        jobContest.put(Job.JOB_TYPE, "CONTEST");
+        assertTrue(Job.isJobType(Job.JobType.VACANT, jobVacant));
+        assertTrue(Job.isJobType(Job.JobType.INTERNSHIP, jobInternship));
+        assertTrue(Job.isJobType(Job.JobType.CONTEST, jobContest));
     }
 }

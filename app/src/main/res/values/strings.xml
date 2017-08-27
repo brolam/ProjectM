@@ -41,4 +41,10 @@
     <string name="job_application_by_smart_phone">Select a resume in PDF format now.</string>
     <string name="job_application_by_computer">Send instructions by email and apply on a computer.</string>
     <string name="job_application_notify_sucessful">Your application was successful!</string>
+    <string name="job_published_label">Published</string>
+    <string name="job_applied_label">Applied</string>
+
+    <string name="job_vacant_tab">Vacant</string>
+    <string name="job_internship_tab">Internship</string>
+    <string name="job_contest_tab">Contest</string>
 </resources>

@@ -125,6 +125,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     public void onDataChange(DataSnapshot dataSnapshot) {
         String jobKey = getIntent().getStringExtra(JOB_KEY);
         HashMap<String, Object>  jobApplications = (HashMap<String, Object>) dataSnapshot.getValue();
+        if (jobApplications == null) return;
         if ( jobApplications.containsKey(jobKey) ){
             showJobApplication((HashMap<String, Object>)jobApplications.get(jobKey));
         }
