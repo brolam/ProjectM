@@ -28,13 +28,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.JobApplication;
 
 public class JobApplicationActivity extends AppCompatActivity implements View.OnClickListener, OnFailureListener, OnSuccessListener<UploadTask.TaskSnapshot> {
     private static final int READ_REQUEST_CODE = 42;
+    private static final String USER_PROPERTIES = "userProperties";
     private static final String JOB_KEY = "job_key";
-    private static final String TITLE = "title";
-    private static final String SUMMARY = "summary";
+    private static final String JOB = "job";
+    public static final int RESULT_OK_APPLICATION_BY_PHONE = 1;
+    public static final int RESULT_OK_APPLICATION_BY_COMPUTER =2 ;
     Toolbar toolbar;
     private View progressView;
     private View contentLayout;
@@ -45,10 +48,17 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
     private FirebaseStorage firebaseStorage;
     private DataBaseProvider dataBaseProvider;
     private Uri uriFileCV = null;
+    private HashMap job;
+    private HashMap userProperties;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.job = (HashMap) getIntent().getSerializableExtra(JOB);
+        this.userProperties = (HashMap) getIntent().getSerializableExtra(USER_PROPERTIES);
+        if (( this.job == null ) || (this.userProperties == null)){
+            this.finish();
+        }
         setContentView(R.layout.activity_job_application);
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -69,18 +79,15 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
 
 
     private void updateScreen() {
-        Intent intent = getIntent();
-        String title = intent.getStringExtra(TITLE);
-        String summary = intent.getStringExtra(SUMMARY);
-        this.toolbar.setTitle(title);
-        this.summary.setText(summary);
+        this.toolbar.setTitle(this.job.get(Job.TITLE).toString());
+        this.summary.setText(this.job.get(Job.SUMMARY).toString());
     }
 
-    public static void show(Activity activity, int requestCode, String jobKey, String title, String summary ){
+    public static void show(Activity activity, int requestCode, HashMap userProperties, String jobKey, HashMap job ){
         Intent intent = new Intent(activity, JobApplicationActivity.class);
+        intent.putExtra(USER_PROPERTIES, userProperties);
         intent.putExtra(JOB_KEY, jobKey);
-        intent.putExtra(TITLE, title);
-        intent.putExtra(SUMMARY, summary);
+        intent.putExtra(JOB, job);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -88,6 +95,8 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
     public void onClick(View view) {
         if ( this.applicationByPhoneOption.equals(view)){
             performFileSearch();
+        } else if ( this.applicationByComputerOption.equals(view)){
+            saveJobApplicationLink();
         }
     }
 
@@ -166,7 +175,15 @@ public class JobApplicationActivity extends AppCompatActivity implements View.On
         HashMap newJobApplication = JobApplication.getNewApplication(jobKey, new Date().getTime());
         this.dataBaseProvider.setJobApplication(newJobApplication);
         showProgress(false);
-        this.setResult(RESULT_OK);
+        this.setResult(RESULT_OK_APPLICATION_BY_PHONE);
+        this.finish();
+    }
+
+    private void saveJobApplicationLink() {
+        String jobKey = getIntent().getStringExtra(JOB_KEY);
+        this.dataBaseProvider.setJobApplicationLink(this.userProperties, jobKey, this.job );
+        showProgress(false);
+        this.setResult(RESULT_OK_APPLICATION_BY_COMPUTER);
         this.finish();
     }
 

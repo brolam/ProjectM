@@ -53,7 +53,7 @@ public class UserProperties {
         return ref.getRef().toString().contains(REFERENCE_NAME);
     }
 
-    public static String getFullName(HashMap<String, Object> userProperties) {
+    public static String getDisplayName(HashMap<String, Object> userProperties) {
         return String.format("%s %s", userProperties.get(UserProperties.NAME), userProperties.get(UserProperties.SURNAME));
     }
 }

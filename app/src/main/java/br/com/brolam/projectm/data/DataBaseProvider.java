@@ -2,18 +2,18 @@ package br.com.brolam.projectm.data;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.JobApplication;
+import br.com.brolam.projectm.data.models.JobApplicationLink;
 import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
@@ -95,6 +95,20 @@ public class DataBaseProvider {
 
     public void removeJobApplicationListener(ValueEventListener valueEventListener) {
         this.referenceJobApplication.removeEventListener(valueEventListener);
+    }
+
+    public void setJobApplicationLink(HashMap userProperties, String jobKey, HashMap job){
+        DatabaseReference pushJobApplicationLink = firebaseDatabase.getReference(JobApplicationLink.REFERENCE_NAME).push();
+        HashMap jobApplicationLink = JobApplicationLink.getNewJobApplicationLink(
+                this.firebaseUser.getUid(),
+                UserProperties.getDisplayName(userProperties),
+                this.firebaseUser.getEmail(),
+                jobKey,
+                (String)job.get(Job.TITLE),
+                (String)job.get(Job.SUMMARY),
+                new Date().getTime()
+        );
+        pushJobApplicationLink.updateChildren(jobApplicationLink);
     }
 
 }

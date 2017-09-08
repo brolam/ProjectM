@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         if ( this.userProperties != null){
             FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
-            String fullName = UserProperties.getFullName( this.userProperties);
+            String fullName = UserProperties.getDisplayName( this.userProperties);
             ((TextView)headerView.findViewById(R.id.userFullName)).setText(fullName);
             ((TextView)headerView.findViewById(R.id.userEmail)).setText(firebaseUser.getEmail());
         }
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onJobClick(String jobKey, HashMap job) {
-        JobActivity.show(this, jobKey, job, REQUEST_CODE_JOB_SELECT);
+        JobActivity.show(this, this.userProperties, jobKey, job, REQUEST_CODE_JOB_SELECT);
     }
 
     @Override

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>ProjectM</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/navbar.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+     
+    </script>  
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/4.2.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/4.2.0/firebase-auth.js"></script>
+    <script defer src="/__/firebase/4.2.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/4.2.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/4.2.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+  </head>
+  <body>
+   <div class="container">
+     <div class="page-header">
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+      <h1>Olá, <label for="exampleInputFile" id="userDislayName" ></label> </h1>
+       <h2>
+            <label id="jobTitle"></label>
+            <span class="help-block" id="jobSummary" ></span>
+      </h2>
+      <form>        
+          <div class="form-group">
+            <label for="exampleInputFile">Selecione o seu currículo no formato pdf</label>
+            <input type="file" id="exampleInputFile">
+            <p class="help-block">Após informar seu currículo clique no botão Enviar para finalizar a sua candidatura.</p>
+          </div>
+          <button id="addJobButton" type="button" class="btn btn-primary btn-lg" >Enviar</button>
+        </form>
+      </div>
+     </div> 
+    </div> <!-- /container -->
+    
+    <p id="load">Firebase SDK Loading&hellip;</p>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        let urlParams = new URLSearchParams(window.location.search);
+        var key = urlParams.get('key');
+        try { 
+          var app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')} Key: ${key}`;
+          //var bigOne = document.getElementById('bigOne');
+          //firebase.database().ref('text').on('value', snapshot => { bigOne.innerText = snapshot.val() });
+
+        } catch (e) {
+          console.error(e);
+          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        };
+
+        var task = firebase.database().ref('jobApplicationsLink/' + key);
+        task.on('value', function(snapshot) {
+          let jobApplicationsLink = snapshot.val();
+          $("#userDislayName").text(jobApplicationsLink.userName);
+          $("#jobTitle").text(jobApplicationsLink.jobTitle);
+          $("#jobSummary").text(jobApplicationsLink.jobSummary);
+        });
+
+      });
+    </script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/css/js/bootstrap.min.js"></script>
+  </body>
+</html>

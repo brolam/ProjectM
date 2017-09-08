@@ -23,7 +23,11 @@ import br.com.brolam.projectm.data.DataBaseProvider;
 import br.com.brolam.projectm.data.models.Job;
 import br.com.brolam.projectm.data.models.JobApplication;
 
+import static br.com.brolam.projectm.JobApplicationActivity.RESULT_OK_APPLICATION_BY_COMPUTER;
+import static br.com.brolam.projectm.JobApplicationActivity.RESULT_OK_APPLICATION_BY_PHONE;
+
 public class JobActivity extends AppCompatActivity implements View.OnClickListener, ValueEventListener {
+    private static final String USER_PROPERTIES = "userProperties";
     private static final String JOB_KEY = "jobKey";
     private static final String JOB = "job";
     private static final int REQUEST_JOB_TO_APPLY = 100;
@@ -36,12 +40,18 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     private Button buttonToApply;
     private TextView description;
     private HashMap job;
+    private HashMap userProperties;
     private DataBaseProvider dataBaseProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job);
+        this.job = (HashMap) getIntent().getSerializableExtra(JOB);
+        this.userProperties = (HashMap) getIntent().getSerializableExtra(USER_PROPERTIES);
+        if (( this.job == null ) || (this.userProperties == null)){
+            this.finish();
+        }
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         if(toolbar != null){
             setSupportActionBar(toolbar);
@@ -52,10 +62,6 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
         this.linearLayoutApplicationDate = this.findViewById(R.id.linearLayoutApplicationDate);
         this.description = (TextView) this.findViewById(R.id.description);
         this.buttonToApply = (Button) this.findViewById(R.id.buttonToApply);
-        this.job = (HashMap) getIntent().getSerializableExtra(JOB);
-        if ( this.job == null ){
-            this.finish();
-        }
         buttonToApply.setOnClickListener(this);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         this.dataBaseProvider = new DataBaseProvider(firebaseUser);
@@ -81,9 +87,10 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
         return true;
     }
 
-    public static void show(Activity activity,String jobKey, HashMap job, int requestCode){
+    public static void show(Activity activity, HashMap userProperties, String jobKey, HashMap job, int requestCode){
         Intent intent = new Intent(activity, JobActivity.class);
         intent.putExtra(JOB_KEY, jobKey);
+        intent.putExtra(USER_PROPERTIES, userProperties);
         intent.putExtra(JOB, job);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -99,9 +106,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         if ( this.buttonToApply.equals(view)){
             String jobKey = this.getIntent().getStringExtra(JOB_KEY);
-            String title = (String)job.get(Job.TITLE);
-            String summary =(String)job.get(Job.SUMMARY);
-            JobApplicationActivity.show(this, REQUEST_JOB_TO_APPLY, jobKey, title, summary);
+            JobApplicationActivity.show(this, REQUEST_JOB_TO_APPLY, this.userProperties, jobKey, this.job);
         }
     }
 
@@ -109,8 +114,10 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ( requestCode == REQUEST_JOB_TO_APPLY){
-            if ( resultCode == RESULT_OK){
+            if ( resultCode == RESULT_OK_APPLICATION_BY_PHONE){
                 notifyJobApplicationSuccessfully();
+            } else if (resultCode == RESULT_OK_APPLICATION_BY_COMPUTER) {
+                notifyJobApplicationLinkSuccessfully();
             }
         }
     }
@@ -119,6 +126,11 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
         Snackbar.make(this.description, R.string.job_application_notify_sucessful, Snackbar.LENGTH_LONG)
                 .setAction(R.string.app_name, null).show();
 
+    }
+
+    private void notifyJobApplicationLinkSuccessfully() {
+        Snackbar.make(this.description, R.string.job_application_link_notify_sucessful, Snackbar.LENGTH_LONG)
+                .setAction(R.string.app_name, null).show();
     }
 
     @Override
