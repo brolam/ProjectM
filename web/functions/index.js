@@ -11,6 +11,7 @@ const env = require('./env.js');
 const admin = require('firebase-admin');
 const app = express();
 admin.initializeApp(functions.config().firebase);
+const database = admin.database();
 app.set('view engine', 'ejs');
 app.use('/', express.static('../public'));
 
@@ -61,6 +62,37 @@ exports.sendEmailJobApplicationLink = functions.database.ref('/jobApplicationsLi
 	    console.log(err.statusCode)
 	  })
 
+});
+
+exports.finisheJobApplicationLink = functions.storage.object().onChange(event => {
+	 const file = event.data;
+	 console.log(file);
+	 const filePath = file.name;
+	 const fileName = filePath.split('/').pop(); 
+    if (!filePath.startsWith('jobApplicationsLink')){
+    	console.log(filePath);
+    	return;
+    }
+
+	var appLinkkey = fileName;
+	var appLinkRef = database.ref(`jobApplicationsLink/${appLinkkey}`)
+    .once("value", function(snapshot) {
+    	var appLink = snapshot.val();
+    	console.log(appLink);
+    	var jobApplication = database.ref(`jobApplications/${appLink.userKey}/${appLink.jobKey}`);
+    	var jobAppContent = {};
+    	jobAppContent['applicationDate'] = Date.now();
+    	jobApplication.update(jobAppContent)
+    	.then(() => { 
+    		console.log('Application was completed with sucessfull'); 
+    	}) 
+    	.catch(err => { 
+    		console.log('Application was completed with error', err.code); 
+    	});
+    })
+    .catch(err => { 
+    		console.log('Read jobApplications was completed with error', err.code); 
+    });
 });
 
 exports.app = functions.https.onRequest(app);
