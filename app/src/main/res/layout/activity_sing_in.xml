@@ -8,7 +8,6 @@
     tools:context="br.com.brolam.projectm.SignInActivity">
 
     <!-- Login progress -->
-
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -23,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/linearLayout">
+        android:layout_above="@+id/linearLayoutBottom">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -86,20 +85,19 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-
             </LinearLayout>
-
 
         </LinearLayout>
     </ScrollView>
     <LinearLayout
+        android:id="@+id/linearLayoutBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:id="@+id/linearLayout">
+        >
         <ImageView
             android:id="@+id/sign_in_button"
             android:layout_width="match_parent"
@@ -118,11 +116,11 @@
             android:layout_gravity="bottom"
             >
             <TextView
-                android:id="@+id/sign_in_forgot_button"
+                android:id="@+id/sign_in_reset_pw_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="50dp"
-                android:textColor="@color/colorWhiteHint"
+                android:textColor="@color/colorFocus"
                 android:text="@string/action_reset_password"
                 />
 
@@ -131,7 +129,7 @@
                 android:layout_width="100dp"
                 android:layout_height="28dp"
                 android:scaleType="fitXY"
-                android:textColor="@color/colorWhiteHint"
+                android:textColor="@color/colorFocus"
                 android:text="@string/action_register"
                 />
         </LinearLayout>

@@ -48,4 +48,6 @@
     <string name="job_vacant_tab">Vacant</string>
     <string name="job_internship_tab">Internship</string>
     <string name="job_contest_tab">Contest</string>
+    <string name="sign_in_reset_pw_sucessfull">Please check your email to reset your password.</string>
+    <string name="sign_in_reset_pw_error">it is not possible to reset your password! Please check the entered email or your connection.</string>
 </resources>

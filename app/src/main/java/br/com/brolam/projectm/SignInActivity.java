@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 /**
  * A login screen that offers login via email/password.
  */
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements OnClickListener {
     private static String TAG = "SignInActivity";
     private static int REQUEST_CODE_DO_REGISTER = 100;
     private FirebaseAuth firebaseAuth;
@@ -39,6 +39,7 @@ public class SignInActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private View linearLayoutBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class SignInActivity extends AppCompatActivity {
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
+        this.linearLayoutBottom = findViewById(R.id.linearLayoutBottom);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -60,13 +62,8 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        View signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_in_reset_pw_button).setOnClickListener(this);
 
         View signUpButton = findViewById(R.id.sign_up_button);
         signUpButton.setOnClickListener(new OnClickListener() {
@@ -166,13 +163,34 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+        if ( TextUtils.isEmpty(email) )
+            return false;
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    private void resetPassword() {
+        String email = this.mEmailView.getText().toString();
+        if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            return;
+        }
+        showProgress(true);
+        this.firebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String message = task.isSuccessful() ? getString(R.string.sign_in_reset_pw_sucessfull) : getString(R.string.sign_in_reset_pw_error);
+                        Snackbar.make(linearLayoutBottom, message, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.app_name, null).show();
+                        showProgress(false);
+                    }
+                });
+
     }
 
     /**
@@ -211,5 +229,13 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.sign_in_button){
+            attemptLogin();
+        } else if (view.getId() == R.id.sign_in_reset_pw_button){
+            resetPassword();
+        }
+    }
 }
 
