@@ -17,11 +17,20 @@
         android:visibility="gone"
         android:layout_alignParentTop="true"/>
 
+    <ImageView
+        android:id="@+id/imageViewSignInTitle"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/sign_in_title"
+        android:layout_alignParentTop="true"/>
+
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/imageViewSignInTitle"
+
         android:layout_above="@+id/linearLayoutBottom">
 
         <LinearLayout
@@ -31,12 +40,7 @@
             android:orientation="vertical"
             >
 
-            <ImageView
-                android:layout_width="match_parent"
 
-                android:layout_height="200dp"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/sign_in_title" />
 
             <LinearLayout
                 android:layout_width="match_parent"
