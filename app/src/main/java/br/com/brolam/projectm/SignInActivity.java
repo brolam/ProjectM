@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -35,18 +38,21 @@ public class SignInActivity extends AppCompatActivity implements OnClickListener
     private FirebaseAuth firebaseAuth;
 
     // UI references.
+    private View imageViewSignInTitle;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     private View linearLayoutBottom;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sing_in);
         this.firebaseAuth = FirebaseAuth.getInstance();
+        this.imageViewSignInTitle = findViewById(R.id.imageViewSignInTitle);
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -62,9 +68,20 @@ public class SignInActivity extends AppCompatActivity implements OnClickListener
             }
         });
 
+        mEmailView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                mEmailView.getWindowVisibleDisplayFrame(r);
+                if (mEmailView.getRootView().getHeight() - (r.bottom - r.top) > 500) { // if more than 100 pixels, its probably a keyboard...
+                    imageViewSignInTitle.setVisibility(View.GONE);
+                } else {
+                    imageViewSignInTitle.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_in_reset_pw_button).setOnClickListener(this);
-
         View signUpButton = findViewById(R.id.sign_up_button);
         signUpButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -237,5 +254,6 @@ public class SignInActivity extends AppCompatActivity implements OnClickListener
             resetPassword();
         }
     }
+
 }
 

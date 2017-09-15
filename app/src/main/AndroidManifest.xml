@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:name=".SignInActivity"
             android:label="@string/title_activity_sing_in"
             android:theme="@style/AppTheme.NoActionBar"/>
