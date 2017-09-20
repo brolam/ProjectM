@@ -8,9 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppThemeSignUp" parent="AppTheme.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorWhite</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -21,6 +30,12 @@
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textColorHighlight">@color/colorPrimaryDark</item>
     </style>
+
+    <style name="EditTextDefaultWhite" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textColorHighlight">@color/colorWhiteHint</item>
+    </style>
+
 
     <style name="Checkbox.Pricing" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:textColor">@color/colorWhite</item>

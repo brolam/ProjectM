@@ -67,7 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        Button nextButton = (Button) findViewById(R.id.nextButton);
+        View nextButton =  findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
