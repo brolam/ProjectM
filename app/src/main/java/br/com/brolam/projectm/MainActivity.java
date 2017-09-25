@@ -37,7 +37,7 @@ import br.com.brolam.projectm.data.models.UserAccount;
 import br.com.brolam.projectm.data.models.UserProperties;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener, JobHolder.JobHolderClickable, TabLayout.OnTabSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ValueEventListener, JobHolder.JobHolderClickable, TabLayout.OnTabSelectedListener, View.OnClickListener {
     private static int REQUEST_CODE_PRICING_SELECT = 100;
     private static int REQUEST_CODE_JOB_SELECT = 101;
 
@@ -64,13 +64,7 @@ public class MainActivity extends AppCompatActivity
         this.recyclerView.setAdapter(this.jobAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -229,5 +223,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        MapJobsActivity.show(this);
     }
 }
