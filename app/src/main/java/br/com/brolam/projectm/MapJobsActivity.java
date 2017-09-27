@@ -3,6 +3,7 @@ package br.com.brolam.projectm;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.Manifest;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -18,9 +20,22 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
+import java.util.Map;
+
+import br.com.brolam.projectm.data.DataBaseProvider;
+import br.com.brolam.projectm.data.models.GeoLocation;
+import br.com.brolam.projectm.data.models.Job;
 
 
-public class MapJobsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMapClickListener, LocationListener {
+public class MapJobsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMapClickListener, LocationListener, ChildEventListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private boolean mPermissionDenied = false;
@@ -30,15 +45,22 @@ public class MapJobsActivity extends AppCompatActivity implements OnMapReadyCall
     private LocationManager locationManager;
     private Location currentBestLocation;
 
+    private FirebaseAuth firebaseAuth;
+    private DataBaseProvider dataBaseProvider = null;
+    ArrayMap<String, Map> jobs = new ArrayMap<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_jobs);
+        this.firebaseAuth = FirebaseAuth.getInstance();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        starDataBaseProvider();
     }
 
     @Override
@@ -48,6 +70,13 @@ public class MapJobsActivity extends AppCompatActivity implements OnMapReadyCall
             // Permission was not granted, display error dialog.
             showMissingPermissionError();
             mPermissionDenied = false;
+        }
+    }
+
+    public void starDataBaseProvider() {
+        FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
+        if ( firebaseUser != null) {
+            this.dataBaseProvider = new DataBaseProvider(firebaseUser);
         }
     }
 
@@ -93,7 +122,10 @@ public class MapJobsActivity extends AppCompatActivity implements OnMapReadyCall
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
-            locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            locationManager.requestSingleUpdate(criteria, this, null);
+            this.dataBaseProvider.addQueryJobsListener(this);
         }
     }
 
@@ -222,4 +254,40 @@ public class MapJobsActivity extends AppCompatActivity implements OnMapReadyCall
         return provider1.equals(provider2);
     }
 
+    private void addMarkerOptions(String jobKey, Map job) {
+        LatLng jobLatLng = new LatLng(GeoLocation.getLatitude(job), GeoLocation.getLongitude(job));
+        Marker jobMarker = this.mMap.addMarker(new MarkerOptions()
+                .position(jobLatLng)
+                .title((String) job.get(Job.TITLE))
+        );
+        jobMarker.setTag(jobKey);
+    }
+
+    @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String key) {
+        boolean jobNotAdded = !jobs.containsKey(key);
+        Map job = (Map) dataSnapshot.getValue();
+        jobs.put(key,job );
+        if ( jobNotAdded ) addMarkerOptions(key, job);
+    }
+
+    @Override
+    public void onChildChanged(DataSnapshot dataSnapshot, String key) {
+        jobs.put(key, (Map) dataSnapshot.getValue());
+    }
+
+    @Override
+    public void onChildRemoved(DataSnapshot dataSnapshot) {
+        jobs.remove(dataSnapshot.getKey());
+    }
+
+    @Override
+    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
 }
